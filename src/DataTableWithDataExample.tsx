@@ -2,48 +2,28 @@ import * as React from "react";
 
 import { Example } from "@blueprintjs/docs-theme";
 import { DataTable, ColumnI } from "./DataTable";
-import { NumericInput, Switch } from "@blueprintjs/core";
+import { NumericInput, Slider, Switch } from "@blueprintjs/core";
 import { Utils } from "@blueprintjs/table";
-import faker from 'faker';
+import { columns } from "./columns";
 
 interface DataTableExampleState {
   columns: Array<ColumnI>;
   numRows?: number;
+  numColumns?: number;
   disableColumnInteractionBar: boolean;
   showHidden: boolean;
   useBlueprintsMenu: boolean;
 }
 
-const columns: Array<ColumnI> = [
-  { field: "User name", semantic: { type: "category" } },
-  { field: "Estimated Salary", semantic: { type: "number" } },
-  { field: "Country", semantic: { type: "category" } },
-  { field: "User description", semantic: { type: "text" } },
-  { field: "Subscription date", semantic: { type: "date" } },
-  { field: "Age", semantic: { type: "number " } },
-  { field: "Job title", semantic: { type: "category" } },
-  { field: "Phone number", semantic: { type: "category" } }
-];
-
-const getRandom = (field: string) =>
-  field === 'User name' ? faker.name.findName()
-  : field === "Estimated Salary" ? (10000 - Math.random() * 20000) + 30000
-  : field === "Country" ? 'Spain'
-  : field === 'User description' ? 'An amazing user description'
-  : field === "Subscription date" ? (new Date()).toISOString()
-  : field === "Age" ? Math.random() * 80
-  : field === "Job title" ? 'Boss'
-  : field === 'Phone number' ? '333-666-999'
-  : undefined;
-
-export class DataTableExample extends React.PureComponent<
+export class DataTableWithDataExample extends React.PureComponent<
   {},
   DataTableExampleState
 > {
   tableRef: DataTable | null = null;
   public state = {
-    columns: columns,
-    numRows: undefined,
+    columns: columns.slice(0, 10),
+    numRows: 10000,
+    numColumns: 10,
     allowSetLabel: false,
     allowSetDescription: false,
     allowPin: false,
@@ -81,6 +61,13 @@ export class DataTableExample extends React.PureComponent<
           placeholder="Number of rows"
           onValueChange={this.setNumRows}
         />
+        <Slider
+          value={this.state.numColumns}
+          labelStepSize={10}
+          min={0}
+          onRelease={this.setNumColumns}
+          max={columns.length}
+        />
       </>
     );
     return (
@@ -88,16 +75,18 @@ export class DataTableExample extends React.PureComponent<
         <h3>DataTable:</h3>
         <div className="dataTableContainer">
           <DataTable
-            ref={dataTable => this.tableRef = dataTable}
+            ref={(dataTable) => (this.tableRef = dataTable)}
             columns={this.state.columns.map((column) => ({
               ...column,
-              setLabel: label => this.setLabel(column.field, label),
-              setDescription: description => this.setDescription(column.field, description),
+              setLabel: (label) => this.setLabel(column.field, label),
+              setDescription: (description) =>
+                this.setDescription(column.field, description),
               pinInTable: () => this.setPinInTable(column.field, true),
               unpinInTable: () => this.setPinInTable(column.field, false),
-              sort: direction => this.setSort(column.field, direction),
-              setTableVisibility: visible => this.setIsVisibleInTable(column.field, visible),
-              castAs: castAs => this.castAs(column.field, castAs)
+              sort: (direction) => this.setSort(column.field, direction),
+              setTableVisibility: (visible) =>
+                this.setIsVisibleInTable(column.field, visible),
+              castAs: (castAs) => this.castAs(column.field, castAs)
             }))}
             numRows={this.state.numRows}
             onColumnsReordered={
@@ -123,51 +112,88 @@ export class DataTableExample extends React.PureComponent<
     [key: string]: number | string | Array<number> | Array<string> | null;
   }> = [];
 
+  loading = false;
+
   getRows = (rowIndex: number) => {
+    if (this.loading) {
+      return;
+    }
+    this.loading = true;
     const baseI = Math.max(rowIndex - 50, 0);
+    console.log(
+      "Requesting rows from ",
+      baseI,
+      " to ",
+      rowIndex + 100,
+      " for ",
+      this.state.numColumns,
+      " columns"
+    );
     const rows: Array<{
       [key: string]: number | string | Array<number> | Array<string> | null;
     }> = [];
     for (let index = baseI; index < rowIndex + 100; index++) {
-      rows[index + baseI] = this.state.columns.reduce((row, column) => ({
-        ...row,
-        [column.field]: getRandom(column.field)
-      }), {});
+      rows[index + baseI] = this.state.columns.reduce(
+        (row, column) => ({
+          ...row,
+          [column.field]: column.getRandomData()
+        }),
+        {}
+      );
     }
     setTimeout(() => {
       this.rows = rows;
+      this.loading = false;
       this.tableRef?.forceUpdate();
     }, 500);
-    
-  }
+  };
 
-  getRow = (rowIndex: number): {
-    [key: string]: number | string | Array<number> | Array<string> | null | undefined;
+  getRow = (
+    rowIndex: number
+  ): {
+    [key: string]:
+      | number
+      | string
+      | Array<number>
+      | Array<string>
+      | null
+      | undefined;
   } => {
-    if (this.rows[rowIndex]) {
+    if (
+      this.rows[rowIndex] &&
+      this.state.numColumns === Object.keys(this.rows[rowIndex]).length
+    ) {
       return this.rows[rowIndex];
     }
     this.getRows(rowIndex);
-    return this.state.columns.reduce((row, column) => ({ ...row, [column.field]: undefined }), {});
-  }
+    return this.state.columns.reduce(
+      (row, column) => ({ ...row, [column.field]: undefined }),
+      {}
+    );
+  };
 
   getCellContent = (rowIndex: number, columnIndex: number) => {
-		const column = this.state.columns[columnIndex];
-		return this.getRow(rowIndex)[column.field];
-	};
+    const column = this.state.columns[columnIndex];
+    return this.getRow(rowIndex)[column.field];
+  };
 
   private toggle = (
-    option:
-      "disableColumnInteractionBar"
-      | "showHidden"
-      | "useBlueprintsMenu"
-  ) => this.setState(state => ({
-    ...state,
-    [option]: !state[option]
-  }));
+    option: "disableColumnInteractionBar" | "showHidden" | "useBlueprintsMenu"
+  ) =>
+    this.setState((state) => ({
+      ...state,
+      [option]: !state[option]
+    }));
 
   private setNumRows = (valueAsNumber: number, valueAsString: string) => {
     this.setState({ numRows: valueAsNumber });
+  };
+
+  private setNumColumns = (valueAsNumber: number) => {
+    this.setState({
+      numColumns: valueAsNumber,
+      columns: columns.slice(0, valueAsNumber)
+    });
   };
 
   private setLabel = (field: string, label: string) => {

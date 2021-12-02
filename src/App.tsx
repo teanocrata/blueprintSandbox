@@ -8,6 +8,7 @@ import { CoreExample } from "./CoreExample";
 import { TableReorderableExample } from "./TableReorderableExample";
 import { TableEditableExample } from "./TableEditableExample";
 import { DataTableExample } from "./DataTableExample";
+import { DataTableWithDataExample } from "./DataTableWithDataExample";
 import { SelectExample } from "./SelectExample";
 
 import "./app.css";
@@ -62,6 +63,12 @@ export class App extends React.PureComponent<IExampleProps, IAppState> {
             onChange={this.handleExampleChange}
             renderActiveTabPanelOnly
           >
+            <Tab
+              id="dataTableWithData"
+              title="Data table with Data"
+              panel={<DataTableWithDataExample />}
+              panelClassName={"hiddenoverflow"}
+            />
             <Tab
               id="dataTable"
               title="Data table"

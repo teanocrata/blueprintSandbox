@@ -97,8 +97,10 @@ export interface ColumnI {
 
 interface Props extends ITableProps {
   columns: Array<ColumnI>;
-  getCellContent?: (rowIndex: number, columnIndex: number) =>
-		string | number | Array<number> | Array<string> | null | undefined;
+  getCellContent?: (
+    rowIndex: number,
+    columnIndex: number
+  ) => string | number | Array<number> | Array<string> | null | undefined;
   showHidden?: boolean;
   useBlueprintsMenu?: boolean;
 }
@@ -106,8 +108,8 @@ interface Props extends ITableProps {
 export class DataTable extends React.Component<Props> {
   tableRef: Table | null = null;
   forceUpdate = () => {
-		this.tableRef && this.tableRef.forceUpdate();
-	}
+    this.tableRef && this.tableRef.forceUpdate();
+  };
   menuRenderer = (columnIndex: number) => (
     <ColumnMenu
       columnIndex={columnIndex}
@@ -180,18 +182,22 @@ export class DataTable extends React.Component<Props> {
     );
   };
   cellRenderer: ICellRenderer = (rowIndex: number, columnIndex: number) => {
-    const content = this.props.getCellContent && this.props.getCellContent(rowIndex, columnIndex);
+    const content =
+      this.props.getCellContent &&
+      this.props.getCellContent(rowIndex, columnIndex);
     return (
       <Cell
         columnIndex={columnIndex}
         rowIndex={rowIndex}
-        loading={this.props.columns[columnIndex].nullsCount == null}
+        loading={content === undefined}
       >
-        {typeof content === 'string'
-					? <TruncatedFormat detectTruncation>{content}</TruncatedFormat>
-					: typeof content === 'object'
-						? <JSONFormat>{content}</JSONFormat>
-						: content}
+        {typeof content === "string" ? (
+          <TruncatedFormat detectTruncation>{content}</TruncatedFormat>
+        ) : typeof content === "object" ? (
+          <JSONFormat>{content}</JSONFormat>
+        ) : (
+          content
+        )}
       </Cell>
     );
   };
