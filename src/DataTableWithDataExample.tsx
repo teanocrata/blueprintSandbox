@@ -24,16 +24,7 @@ export class DataTableWithDataExample extends React.PureComponent<
     columns: columns.slice(0, 10),
     numRows: 10000,
     numColumns: 10,
-    allowSetLabel: false,
-    allowSetDescription: false,
-    allowPin: false,
-    columnHasSemantic: false,
-    allowReorderColumns: false,
-    columnHasNullsInfo: false,
     disableColumnInteractionBar: false,
-    allowCast: false,
-    allowSort: false,
-    allowHide: false,
     showHidden: false,
     useBlueprintsMenu: false
   };
@@ -89,11 +80,7 @@ export class DataTableWithDataExample extends React.PureComponent<
               castAs: (castAs) => this.castAs(column.field, castAs)
             }))}
             numRows={this.state.numRows}
-            onColumnsReordered={
-              this.state.allowReorderColumns
-                ? this.handleColumnsReordered
-                : undefined
-            }
+            onColumnsReordered={this.handleColumnsReordered}
             {...(this.state.disableColumnInteractionBar
               ? {
                   enableColumnInteractionBar: false
