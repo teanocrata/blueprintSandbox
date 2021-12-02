@@ -16,7 +16,9 @@ import {
   ITableProps,
   RenderMode,
   Table,
-  Regions
+  Regions,
+  TruncatedFormat,
+  JSONFormat
 } from "@blueprintjs/table";
 import { ColumnMenu } from "./ColumnMenu";
 import { ColumnName } from "./ColumnName";
@@ -95,12 +97,17 @@ export interface ColumnI {
 
 interface Props extends ITableProps {
   columns: Array<ColumnI>;
+  getCellContent?: (rowIndex: number, columnIndex: number) =>
+		string | number | Array<number> | Array<string> | null | undefined;
   showHidden?: boolean;
   useBlueprintsMenu?: boolean;
 }
 
 export class DataTable extends React.Component<Props> {
   tableRef: Table | null = null;
+  forceUpdate = () => {
+		this.tableRef && this.tableRef.forceUpdate();
+	}
   menuRenderer = (columnIndex: number) => (
     <ColumnMenu
       columnIndex={columnIndex}
@@ -173,12 +180,19 @@ export class DataTable extends React.Component<Props> {
     );
   };
   cellRenderer: ICellRenderer = (rowIndex: number, columnIndex: number) => {
+    const content = this.props.getCellContent && this.props.getCellContent(rowIndex, columnIndex);
     return (
       <Cell
         columnIndex={columnIndex}
         rowIndex={rowIndex}
         loading={this.props.columns[columnIndex].nullsCount == null}
-      />
+      >
+        {typeof content === 'string'
+					? <TruncatedFormat detectTruncation>{content}</TruncatedFormat>
+					: typeof content === 'object'
+						? <JSONFormat>{content}</JSONFormat>
+						: content}
+      </Cell>
     );
   };
   render() {

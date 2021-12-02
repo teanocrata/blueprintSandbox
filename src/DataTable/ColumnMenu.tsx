@@ -104,7 +104,10 @@ export const ColumnMenu = ({
           {
             icon: "sort-asc" as const,
             id: "sortAscending",
-            onClick: () => column.sort!("ASC"),
+            onClick: () => {
+              column.sort!("ASC");
+              tableRef?.forceUpdate();
+            },
             disabled: column.sorted === "ASC",
             text: "Sort Asc",
             allowedForMultipleSelection: false
@@ -112,7 +115,10 @@ export const ColumnMenu = ({
           {
             icon: "sort-desc" as const,
             id: "sortDescending",
-            onClick: () => column.sort!("DESC"),
+            onClick: () => {
+              column.sort!("DESC");
+              tableRef?.forceUpdate();
+            },
             disabled: column.sorted === "DESC",
             text: "Sort Desc",
             allowedForMultipleSelection: false
@@ -160,6 +166,7 @@ export const ColumnMenu = ({
                   column.isVisibleInTable === false ? true : false
                 );
               }
+              tableRef?.forceUpdate();
             },
             text: column.isVisibleInTable === false ? "View" : "Hide",
             allowedForMultipleSelection: true
