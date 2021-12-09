@@ -80,6 +80,7 @@ export interface ColumnI {
   description?: string;
   semantic?: {
     type: string;
+    dtype?: "image";
   };
   pinInTable?: () => void;
   unpinInTable?: () => void;
@@ -108,7 +109,19 @@ interface Props extends ITableProps {
 export class DataTable extends React.Component<Props> {
   tableRef: Table | null = null;
   forceUpdate = () => {
-    this.tableRef && this.tableRef.forceUpdate();
+    if (this.tableRef) {
+      this.tableRef.forceUpdate();
+    }
+  };
+  handleColumnsReordered = (
+    oldIndex: number,
+    newIndex: number,
+    length: number
+  ) => {
+    if (this.props.onColumnsReordered) {
+      this.props.onColumnsReordered(oldIndex, newIndex, length);
+    }
+    this.forceUpdate();
   };
   menuRenderer = (columnIndex: number) => (
     <ColumnMenu
@@ -185,13 +198,31 @@ export class DataTable extends React.Component<Props> {
     const content =
       this.props.getCellContent &&
       this.props.getCellContent(rowIndex, columnIndex);
+    const column = this.props.columns[columnIndex];
     return (
       <Cell
         columnIndex={columnIndex}
         rowIndex={rowIndex}
         loading={content === undefined}
       >
-        {typeof content === "string" ? (
+        {column.semantic?.dtype === "image" ? (
+          <a href={content as string}>
+            <img
+              style={{ width: "100%", height: "100%" }}
+              src={content as string}
+              alt={"url at " + rowIndex + " - " + columnIndex}
+              {...{ loading: "lazy" }}
+            />
+          </a>
+        ) : column.semantic?.type === "url" ? (
+          <a href={content as string}>
+            <TruncatedFormat detectTruncation>
+              {content as string}
+            </TruncatedFormat>
+          </a>
+        ) : column.semantic?.type === "boolean" ? (
+          <JSONFormat>{content}</JSONFormat>
+        ) : typeof content === "string" ? (
           <TruncatedFormat detectTruncation>{content}</TruncatedFormat>
         ) : typeof content === "object" ? (
           <JSONFormat>{content}</JSONFormat>

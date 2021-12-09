@@ -92,7 +92,7 @@ export const columns: Array<
   },
   {
     field: "Longitude",
-    semantic: { type: "category" },
+    semantic: { type: "number" },
     getRandomData: address.longitude
   },
   {
@@ -203,12 +203,12 @@ export const columns: Array<
   },
   {
     field: "Address latitude",
-    semantic: { type: "category" },
+    semantic: { type: "number" },
     getRandomData: address.latitude
   },
   {
     field: "Address longitude",
-    semantic: { type: "category" },
+    semantic: { type: "number" },
     getRandomData: address.longitude
   },
   {
@@ -308,42 +308,42 @@ export const columns: Array<
   },
   {
     field: "Commerce color",
-    semantic: { type: "categoy" },
+    semantic: { type: "category" },
     getRandomData: commerce.color
   },
   {
     field: "Commerce department",
-    semantic: { type: "categoy" },
+    semantic: { type: "category" },
     getRandomData: commerce.department
   },
   {
     field: "Commerce productName",
-    semantic: { type: "categoy" },
+    semantic: { type: "category" },
     getRandomData: commerce.productName
   },
   {
     field: "Commerce price",
-    semantic: { type: "categoy" },
+    semantic: { type: "category" },
     getRandomData: commerce.price
   },
   {
     field: "Commerce productAdjective",
-    semantic: { type: "categoy" },
+    semantic: { type: "category" },
     getRandomData: commerce.productAdjective
   },
   {
     field: "Commerce productMaterial",
-    semantic: { type: "categoy" },
+    semantic: { type: "category" },
     getRandomData: commerce.productMaterial
   },
   {
     field: "Commerce product",
-    semantic: { type: "categoy" },
+    semantic: { type: "category" },
     getRandomData: commerce.product
   },
   {
     field: "Commerce productDescription",
-    semantic: { type: "categoy" },
+    semantic: { type: "category" },
     getRandomData: commerce.productDescription
   },
   {
@@ -423,17 +423,17 @@ export const columns: Array<
   },
   {
     field: "Datatype number",
-    semantic: { type: "category" },
+    semantic: { type: "number" },
     getRandomData: datatype.number
   },
   {
     field: "Datatype float",
-    semantic: { type: "category" },
+    semantic: { type: "number" },
     getRandomData: datatype.float
   },
   {
     field: "Datatype datetime",
-    semantic: { type: "category" },
+    semantic: { type: "date" },
     getRandomData: datatype.datetime
   },
   {
@@ -448,7 +448,7 @@ export const columns: Array<
   },
   {
     field: "Datatype boolean",
-    semantic: { type: "category" },
+    semantic: { type: "boolean" },
     getRandomData: datatype.boolean
   },
   {
@@ -468,12 +468,12 @@ export const columns: Array<
   },
   {
     field: "Date past",
-    semantic: { type: "category" },
+    semantic: { type: "date" },
     getRandomData: date.past
   },
   {
     field: "Date future",
-    semantic: { type: "category" },
+    semantic: { type: "date" },
     getRandomData: date.future
   },
   {
@@ -493,7 +493,7 @@ export const columns: Array<
   },
   {
     field: "Date soon",
-    semantic: { type: "category" },
+    semantic: { type: "date" },
     getRandomData: date.soon
   },
   {
@@ -508,7 +508,7 @@ export const columns: Array<
   },
   {
     field: "Finance account",
-    semantic: { type: "category" },
+    semantic: { type: "number" },
     getRandomData: finance.account
   },
   {
@@ -518,7 +518,7 @@ export const columns: Array<
   },
   {
     field: "Finance routingNumber",
-    semantic: { type: "category" },
+    semantic: { type: "number" },
     getRandomData: finance.routingNumber
   },
   {
@@ -593,87 +593,87 @@ export const columns: Array<
   },
   {
     field: "Image image",
-    semantic: { type: "url" },
+    semantic: { type: "url", dtype: "image" },
     getRandomData: image.image
   },
   {
     field: "Image avatar",
-    semantic: { type: "url" },
+    semantic: { type: "url", dtype: "image" },
     getRandomData: image.avatar
   },
   {
     field: "Image imageUrl",
-    semantic: { type: "url" },
+    semantic: { type: "url", dtype: "image" },
     getRandomData: image.imageUrl
   },
   {
     field: "Image abstract",
-    semantic: { type: "url" },
+    semantic: { type: "url", dtype: "image" },
     getRandomData: image.abstract
   },
   {
     field: "Image animals",
-    semantic: { type: "url" },
+    semantic: { type: "url", dtype: "image" },
     getRandomData: image.animals
   },
   {
     field: "Image business",
-    semantic: { type: "url" },
+    semantic: { type: "url", dtype: "image" },
     getRandomData: image.business
   },
   {
     field: "Image cats",
-    semantic: { type: "url" },
+    semantic: { type: "url", dtype: "image" },
     getRandomData: image.cats
   },
   {
     field: "Image city",
-    semantic: { type: "url" },
+    semantic: { type: "url", dtype: "image" },
     getRandomData: image.city
   },
   {
     field: "Image food",
-    semantic: { type: "url" },
+    semantic: { type: "url", dtype: "image" },
     getRandomData: image.food
   },
   {
     field: "Image nightlife",
-    semantic: { type: "url" },
+    semantic: { type: "url", dtype: "image" },
     getRandomData: image.nightlife
   },
   {
     field: "Image fashion",
-    semantic: { type: "url" },
+    semantic: { type: "url", dtype: "image" },
     getRandomData: image.fashion
   },
   {
     field: "Image people",
-    semantic: { type: "url" },
+    semantic: { type: "url", dtype: "image" },
     getRandomData: image.people
   },
   {
     field: "Image nature",
-    semantic: { type: "url" },
+    semantic: { type: "url", dtype: "image" },
     getRandomData: image.nature
   },
   {
     field: "Image sports",
-    semantic: { type: "url" },
+    semantic: { type: "url", dtype: "image" },
     getRandomData: image.sports
   },
   {
     field: "Image technics",
-    semantic: { type: "url" },
+    semantic: { type: "url", dtype: "image" },
     getRandomData: image.technics
   },
   {
     field: "Image transport",
-    semantic: { type: "url" },
+    semantic: { type: "url", dtype: "image" },
     getRandomData: image.transport
   },
   {
     field: "Image dataUri",
-    semantic: { type: "url" },
+    semantic: { type: "url", dtype: "image" },
     getRandomData: image.dataUri
   }
   // { field: 'Image lorempixel', semantic: {type: 'url'}, getRandomData: image.lorempixel },

@@ -2,14 +2,14 @@ import * as React from "react";
 
 import { Example } from "@blueprintjs/docs-theme";
 import { DataTable, ColumnI } from "./DataTable";
-import { NumericInput, Slider, Switch } from "@blueprintjs/core";
+import { DatasetTable } from "./DatasetTable";
+import { NumericInput, Switch } from "@blueprintjs/core";
 import { Utils } from "@blueprintjs/table";
 import { columns } from "./columns";
 
 interface DataTableExampleState {
   columns: Array<ColumnI>;
   numRows?: number;
-  numColumns?: number;
   disableColumnInteractionBar: boolean;
   showHidden: boolean;
   useBlueprintsMenu: boolean;
@@ -21,9 +21,8 @@ export class DataTableWithDataExample extends React.PureComponent<
 > {
   tableRef: DataTable | null = null;
   public state = {
-    columns: columns.slice(0, 10),
+    columns,
     numRows: 10000,
-    numColumns: 10,
     disableColumnInteractionBar: false,
     showHidden: false,
     useBlueprintsMenu: false
@@ -52,21 +51,13 @@ export class DataTableWithDataExample extends React.PureComponent<
           placeholder="Number of rows"
           onValueChange={this.setNumRows}
         />
-        <Slider
-          value={this.state.numColumns}
-          labelStepSize={10}
-          min={0}
-          onRelease={this.setNumColumns}
-          max={columns.length}
-        />
       </>
     );
     return (
       <Example options={options} id={"DataTable"}>
         <h3>DataTable:</h3>
         <div className="dataTableContainer">
-          <DataTable
-            ref={(dataTable) => (this.tableRef = dataTable)}
+          <DatasetTable
             columns={this.state.columns.map((column) => ({
               ...column,
               setLabel: (label) => this.setLabel(column.field, label),
@@ -86,83 +77,14 @@ export class DataTableWithDataExample extends React.PureComponent<
                   enableColumnInteractionBar: false
                 }
               : {})}
-            showHidden={this.state.showHidden}
-            useBlueprintsMenu={this.state.useBlueprintsMenu}
-            getCellContent={this.getCellContent}
+            // showHidden={this.state.showHidden}
+            // useBlueprintsMenu={this.state.useBlueprintsMenu}
+            // getCellContent={this.getCellContent}
           />
         </div>
       </Example>
     );
   }
-
-  rows: Array<{
-    [key: string]: number | string | Array<number> | Array<string> | null;
-  }> = [];
-
-  loading = false;
-
-  getRows = (rowIndex: number) => {
-    if (this.loading) {
-      return;
-    }
-    this.loading = true;
-    const baseI = Math.max(rowIndex - 50, 0);
-    console.log(
-      "Requesting rows from ",
-      baseI,
-      " to ",
-      rowIndex + 100,
-      " for ",
-      this.state.numColumns,
-      " columns"
-    );
-    const rows: Array<{
-      [key: string]: number | string | Array<number> | Array<string> | null;
-    }> = [];
-    for (let index = baseI; index < rowIndex + 100; index++) {
-      rows[index + baseI] = this.state.columns.reduce(
-        (row, column) => ({
-          ...row,
-          [column.field]: column.getRandomData()
-        }),
-        {}
-      );
-    }
-    setTimeout(() => {
-      this.rows = rows;
-      this.loading = false;
-      this.tableRef?.forceUpdate();
-    }, 500);
-  };
-
-  getRow = (
-    rowIndex: number
-  ): {
-    [key: string]:
-      | number
-      | string
-      | Array<number>
-      | Array<string>
-      | null
-      | undefined;
-  } => {
-    if (
-      this.rows[rowIndex] &&
-      this.state.numColumns === Object.keys(this.rows[rowIndex]).length
-    ) {
-      return this.rows[rowIndex];
-    }
-    this.getRows(rowIndex);
-    return this.state.columns.reduce(
-      (row, column) => ({ ...row, [column.field]: undefined }),
-      {}
-    );
-  };
-
-  getCellContent = (rowIndex: number, columnIndex: number) => {
-    const column = this.state.columns[columnIndex];
-    return this.getRow(rowIndex)[column.field];
-  };
 
   private toggle = (
     option: "disableColumnInteractionBar" | "showHidden" | "useBlueprintsMenu"
@@ -174,13 +96,6 @@ export class DataTableWithDataExample extends React.PureComponent<
 
   private setNumRows = (valueAsNumber: number, valueAsString: string) => {
     this.setState({ numRows: valueAsNumber });
-  };
-
-  private setNumColumns = (valueAsNumber: number) => {
-    this.setState({
-      numColumns: valueAsNumber,
-      columns: columns.slice(0, valueAsNumber)
-    });
   };
 
   private setLabel = (field: string, label: string) => {
