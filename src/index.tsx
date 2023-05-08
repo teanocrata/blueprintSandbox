@@ -10,4 +10,4 @@ import "@blueprintjs/table/lib/css/table.css";
 
 import { App } from "./App";
 
-render(<App id="app" />, document.getElementById("root"));
+render(<App />, document.getElementById("root"));
