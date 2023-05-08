@@ -96,6 +96,7 @@ export class DatasetTable extends React.Component<{
   };
 
   getCellContent = (rowIndex: number, columnIndex: number) => {
+    console.log(rowIndex, "-", columnIndex);
     const column = this.props.columns[columnIndex];
     return this.getRow(rowIndex)[column.field];
   };
